@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jsawatzky/api-common/metrics"
+	"github.com/jsawatzky/go-common/metrics"
 )
 
 func runServer(server *http.Server, serverErrors chan<- error) {

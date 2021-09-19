@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/jsawatzky/api-common/internal"
+	"github.com/jsawatzky/go-common/internal"
 )
 
 func Middleware(h http.Handler) http.Handler {

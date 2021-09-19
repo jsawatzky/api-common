@@ -1,4 +1,4 @@
-module github.com/jsawatzky/api-common
+module github.com/jsawatzky/go-common
 
 go 1.16
 
