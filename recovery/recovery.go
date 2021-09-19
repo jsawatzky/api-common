@@ -1,13 +1,18 @@
 package recovery
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/jsawatzky/go-common/log"
+)
+
+var (
+	logger = log.GetLogger("recovery")
 )
 
 func recoverFromPanic(w http.ResponseWriter) {
 	if r := recover(); r != nil {
-		log.Printf("unhandled panic: %v", r)
+		logger.Error("unhandled panic: %v", r)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }

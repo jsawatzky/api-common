@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,17 +9,22 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jsawatzky/go-common/log"
 	"github.com/jsawatzky/go-common/metrics"
 )
 
+var (
+	logger = log.GetLogger("http")
+)
+
 func runServer(server *http.Server, serverErrors chan<- error) {
-	log.Printf("Starting server listening on %s", server.Addr)
+	logger.Info("Starting server listening on %s", server.Addr)
 	switch err := server.ListenAndServe(); err {
 	case http.ErrServerClosed:
-		log.Printf("Stopped server listening on %s", server.Addr)
+		logger.Info("Stopped server listening on %s", server.Addr)
 		return
 	default:
-		log.Printf("Error in server listening on %s", server.Addr)
+		logger.Error("Error in server listening on %s", server.Addr)
 		serverErrors <- err
 	}
 }
@@ -30,7 +34,7 @@ func StartWithMetrics(server *http.Server) error {
 }
 
 func Start(servers ...*http.Server) error {
-	interrupts := make(chan os.Signal)
+	interrupts := make(chan os.Signal, 1)
 	signal.Notify(interrupts, syscall.SIGTERM, syscall.SIGINT)
 
 	serverErrors := make(chan error, len(servers))
