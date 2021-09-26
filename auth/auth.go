@@ -8,6 +8,6 @@ var (
 	userKey = key{}
 )
 
-func GetUser(ctx context.Context) interface{} {
-	return ctx.Value(userKey)
+func GetUser(ctx context.Context) string {
+	return ctx.Value(userKey).(string)
 }

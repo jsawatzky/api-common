@@ -10,5 +10,5 @@ var (
 )
 
 type IdentityProvider interface {
-	Get(ctx context.Context, id string) (interface{}, error)
+	Get(ctx context.Context, id string) (string, error)
 }
