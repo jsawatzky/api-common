@@ -40,7 +40,7 @@ const (
 
 func init() {
 	jwksCache.SetLoaderFunction(func(key string) (data interface{}, ttl time.Duration, err error) {
-		resp, err := http.Get(fmt.Sprintf("%s/.well-known/jwks.json", viper.GetString("auth0_tenent")))
+		resp, err := http.Get(fmt.Sprintf("%s/.well-known/jwks.json", viper.GetString("auth0_issuer")))
 
 		if err != nil {
 			return nil, cacheTimeout, err
@@ -79,7 +79,7 @@ func getPemCert(token *jwt.Token) (string, error) {
 }
 
 func NewAuth0Middleware(ip IdentityProvider) func(http.Handler) http.Handler {
-	if !(viper.IsSet("auth0_audience") && viper.IsSet("auth0_issuer") && viper.IsSet("auth0_tenent")) {
+	if !(viper.IsSet("auth0_audience") && viper.IsSet("auth0_issuer")) {
 		logger.Fatal("Missing required config")
 	}
 
