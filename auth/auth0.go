@@ -40,7 +40,7 @@ const (
 
 func init() {
 	jwksCache.SetLoaderFunction(func(key string) (data interface{}, ttl time.Duration, err error) {
-		resp, err := http.Get(fmt.Sprintf("%s/.well-known/jwks.json", viper.GetString("auth0_issuer")))
+		resp, err := http.Get(fmt.Sprintf("%s.well-known/jwks.json", viper.GetString("auth0_issuer")))
 
 		if err != nil {
 			return nil, cacheTimeout, err
