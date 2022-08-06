@@ -17,7 +17,7 @@ func NewReverseProxyMiddleware(ip IdentityProvider) func(http.Handler) http.Hand
 				if errors.Is(err, ErrPermissionDenied) {
 					logger.Warn("Permission denied for user \"%s\"", id)
 				} else {
-					logger.Error("Error retreiving user identity: %v", err)
+					logger.Error("Error retrieving user identity: %v", err)
 				}
 				api.EncodeResponse(rw, http.StatusForbidden, AuthError(err.Error()))
 				return

@@ -9,27 +9,34 @@ import (
 	"github.com/jsawatzky/go-common/internal"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/spf13/viper"
 )
 
 var (
 	httpRequestsTotal = promauto.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: "http_requests_total",
-			Help: "Total number of HTTP requests",
+			Namespace: viper.GetString("metric_namespace"),
+			Subsystem: "http",
+			Name:      "requests_total",
+			Help:      "Total number of HTTP requests",
 		},
 		[]string{"method", "path", "code"},
 	)
 	httpRequestsDuration = promauto.NewHistogramVec(
 		prometheus.HistogramOpts{
-			Name: "http_request_duration_seconds",
-			Help: "Total number of HTTP requests",
+			Namespace: viper.GetString("metric_namespace"),
+			Subsystem: "http",
+			Name:      "request_duration_seconds",
+			Help:      "Total number of HTTP requests",
 		},
 		[]string{"method", "path", "code"},
 	)
 	httpResponseSize = promauto.NewHistogramVec(
 		prometheus.HistogramOpts{
-			Name: "http_response_size_bytes",
-			Help: "Total number of HTTP requests",
+			Namespace: viper.GetString("metric_namespace"),
+			Subsystem: "http",
+			Name:      "response_size_bytes",
+			Help:      "Total number of HTTP requests",
 		},
 		[]string{"method", "path", "code"},
 	)

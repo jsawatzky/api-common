@@ -115,8 +115,8 @@ func NewAuth0Middleware(ip IdentityProvider) func(http.Handler) http.Handler {
 			http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 				token, ok := r.Context().Value(userProperty).(*jwt.Token)
 				if !ok {
-					logger.Error("Could not retreive JWT")
-					api.EncodeResponse(rw, http.StatusForbidden, AuthError("could not retreive JWT"))
+					logger.Error("Could not retrieve JWT")
+					api.EncodeResponse(rw, http.StatusForbidden, AuthError("could not retrieve JWT"))
 				}
 				subject := token.Claims.(jwt.MapClaims)["sub"].(string)
 				user, err := ip.Get(r.Context(), subject)
@@ -124,7 +124,7 @@ func NewAuth0Middleware(ip IdentityProvider) func(http.Handler) http.Handler {
 					if errors.Is(err, ErrPermissionDenied) {
 						logger.Warn("Permission denied for user \"%s\"", subject)
 					} else {
-						logger.Error("Error retreiving user identity: %v", err)
+						logger.Error("Error retrieving user identity: %v", err)
 					}
 					api.EncodeResponse(rw, http.StatusForbidden, AuthError(err.Error()))
 					return
