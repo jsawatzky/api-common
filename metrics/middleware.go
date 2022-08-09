@@ -12,37 +12,40 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	httpRequestsTotal = promauto.NewCounterVec(
-		prometheus.CounterOpts{
-			Namespace: viper.GetString("metric_namespace"),
-			Subsystem: "http",
-			Name:      "requests_total",
-			Help:      "Total number of HTTP requests",
-		},
-		[]string{"method", "path", "code"},
-	)
-	httpRequestsDuration = promauto.NewHistogramVec(
-		prometheus.HistogramOpts{
-			Namespace: viper.GetString("metric_namespace"),
-			Subsystem: "http",
-			Name:      "request_duration_seconds",
-			Help:      "Total number of HTTP requests",
-		},
-		[]string{"method", "path", "code"},
-	)
-	httpResponseSize = promauto.NewHistogramVec(
-		prometheus.HistogramOpts{
-			Namespace: viper.GetString("metric_namespace"),
-			Subsystem: "http",
-			Name:      "response_size_bytes",
-			Help:      "Total number of HTTP requests",
-		},
-		[]string{"method", "path", "code"},
-	)
-)
-
 func Middleware(h http.Handler) http.Handler {
+
+	var (
+		httpRequestsTotal = promauto.NewCounterVec(
+			prometheus.CounterOpts{
+				Namespace: viper.GetString("metric_namespace"),
+				Subsystem: "http",
+				Name:      "requests_total",
+				Help:      "Total number of HTTP requests",
+			},
+			[]string{"method", "path", "code"},
+		)
+		httpRequestsDuration = promauto.NewHistogramVec(
+			prometheus.HistogramOpts{
+				Namespace: viper.GetString("metric_namespace"),
+				Subsystem: "http",
+				Name:      "request_duration_seconds",
+				Help:      "HTTP request duration in seconds",
+				Buckets:   prometheus.DefBuckets,
+			},
+			[]string{"method", "path", "code"},
+		)
+		httpResponseSize = promauto.NewHistogramVec(
+			prometheus.HistogramOpts{
+				Namespace: viper.GetString("metric_namespace"),
+				Subsystem: "http",
+				Name:      "response_size_bytes",
+				Help:      "Size of HTTP responses in bytes",
+				Buckets:   prometheus.ExponentialBuckets(10, 5, 6),
+			},
+			[]string{"method", "path", "code"},
+		)
+	)
+
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		route := mux.CurrentRoute(r)
 		path := "unknown"
