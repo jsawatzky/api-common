@@ -3,6 +3,7 @@ package metrics
 import (
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -12,9 +13,16 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	httpRequestsTotal    *prometheus.CounterVec
+	httpRequestsDuration *prometheus.HistogramVec
+	httpResponseSize     *prometheus.HistogramVec
+)
+var once sync.Once
+
 func Middleware(h http.Handler) http.Handler {
 
-	var (
+	once.Do(func() {
 		httpRequestsTotal = promauto.NewCounterVec(
 			prometheus.CounterOpts{
 				Namespace: viper.GetString("metric_namespace"),
@@ -44,7 +52,7 @@ func Middleware(h http.Handler) http.Handler {
 			},
 			[]string{"method", "path", "code"},
 		)
-	)
+	})
 
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		route := mux.CurrentRoute(r)
